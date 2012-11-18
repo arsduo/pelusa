@@ -23,20 +23,8 @@ module Pelusa
     #
     # Returns a Report of the single run.
     def run_file(file)
-      ast      = parser.parse_file(file)
       analyzer = Analyzer.new(@lints, @reporter, file)
-      analyzer.analyze(ast)
-    end
-
-    #######
-    private
-    #######
-
-    # Internal: Returns the Melbourne 1.9 parser.
-    #
-    # Returns a Rubinius::Melbourne parser.
-    def parser
-      Rubinius::Melbourne19
+      analyzer.analyze
     end
   end
 end
