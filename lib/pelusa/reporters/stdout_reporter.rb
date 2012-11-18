@@ -9,11 +9,12 @@ module Pelusa
 
     def report
       puts "  \e[0;36m#{@filename}\e[0m"
-      puts
 
       @reports.each do |class_report|
         print_report(class_report)
+        puts
       end
+      puts "\n"
     end
 
     private
@@ -21,13 +22,15 @@ module Pelusa
     def print_report(class_report)
       class_name = class_report.class_name
 
-      puts "  #{class_report.type} #{class_name}"
+      print "  #{class_report.type} #{class_name}"
+      puts class_report.successful? ? success_mark : failure_mark
 
-      analyses = class_report.analyses
-      analyses.each do |analysis|
-        print_analysis(analysis)
+      if verbose? || !class_report.successful?
+        analyses = class_report.analyses
+        analyses.each do |analysis|
+          print_analysis(analysis)
+        end
       end
-      puts
     end
 
     def print_analysis(analysis)
@@ -38,13 +41,28 @@ module Pelusa
       print "    \e[0;33m✿ %s \e[0m" % name
 
       if analysis.successful?
-        print "\e[0;32m✓\e[0m\n"
+        puts success_mark
         return
       end
 
-      print "\e[0;31m✗\n\t"
-      puts message
+      puts failure_mark
+      puts "\t" + message
       print "\e[0m"
+    end
+
+    # Internal: print a success checkmark.
+    def success_mark
+      "\e[0;32m✓\e[0m"
+    end
+
+    # Internal: print a failure x.
+    def failure_mark
+      "\e[0;31m✗"
+    end
+
+    # Internal: Print verbose information, such as details of passed lints.
+    def verbose?
+      Pelusa.configuration["global"].fetch("verbose", false)
     end
   end
 end
