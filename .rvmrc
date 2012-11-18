@@ -1,2 +1,0 @@
-rvm use --create rbx@pelusa
-RBXOPT="$RBXOPT -X19"
